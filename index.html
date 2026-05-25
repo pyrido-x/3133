@@ -116,6 +116,8 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
+// 🌟 改成这样：如果是公网打开，它会自动连接 Render 云服务器；本地打开自动连本地
+const socket = io();
 let N, gridData = [], players = [], currentPlayer = 1, userPlayerId = 1;
 let gameActive = false, selectionMode = 'move', blastPath = [];
 const TERRAIN = { EMPTY: 'white', MOUNTAIN: 'gray', WATER: 'blue', TREE: 'green' };
