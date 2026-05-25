@@ -322,11 +322,21 @@ function canMoveTo(sr, sc, tr, tc, mode) {
 }
 
 function isWaterConnected(sr, sc, tr, tc) {
-    let q = [[sr, sc]], v = new Set([`${sr}, sc`]);
+    let q = [[sr, sc]], v = new Set([`${sr},${sc}`]); // 🌟 已修复模板字符串写错变量的Bug
     while(q.length) {
-        let [r, c] = q.shift(); if (r === tr && c === tc) return true;
-        for(let dr=-1; dr<=1; dr++) for(let dc=-1; dc<=1; dc++) {
-            let nr=r+dr, nc=c+dc; if (nr>=0&&nr<N&&gridData[nr][nc].type===TERRAIN.WATER&&!v.has(`${nr},${nc}`)) { v.add(`${nr},${nc}`); q.push([nr, nc]); }
+        let [r, c] = q.shift(); 
+        if (r === tr && c === tc) return true;
+        for(let dr=-1; dr<=1; dr++) {
+            for(let dc=-1; dc<=1; dc++) {
+                let nr=r+dr, nc=c+dc; 
+                // 🌟 核心修复：完整加上了 nc >= 0 && nc < N 的列边界守护
+                if (nr>=0 && nr<N && nc>=0 && nc<N) { 
+                    if (gridData[nr][nc].type===TERRAIN.WATER && !v.has(`${nr},${nc}`)) { 
+                        v.add(`${nr},${nc}`); 
+                        q.push([nr, nc]); 
+                    }
+                }
+            }
         }
     }
     return false;
