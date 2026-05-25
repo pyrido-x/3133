@@ -9,22 +9,24 @@ const io = require('socket.io')(http, {
 });
 const path = require('path');
 
-// 🌟🌟🌟【关键修复：告诉服务器前端网页就在当前目录】🌟🌟🌟
+// 1. 让服务器能够正确交出同目录下的 index.html 网页
 app.use(express.static(path.join(__dirname, '/')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// 房间和游戏逻辑数据
+// 2. 这里塞入你原本的 房间数据 和 socket.io 联机逻辑
 const rooms = {};
 
 io.on('connection', (socket) => {
-    // 你原本的 socket.io 联机逻辑代码...
-    // （这里保持你原本的 io.on 内部逻辑不动即可）
+    console.log('有玩家连接进来了：', socket.id);
+    
+    // 把你原本处理房间（create-room, join-room, move）的 io.on 逻辑原封不动贴在这里
+    // ...
 });
 
-// 🌟🌟🌟【关键修复：不要用固定端口，优先读取云平台分配的端口】🌟🌟🌟
+// 3. 🌟 核心：Render 免费版必须动态读取端口，不能写死成 3000 
 const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
     console.log(`游戏服务器已在全球公网启动，端口: ${PORT}`);
